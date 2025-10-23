@@ -23,36 +23,51 @@ export default function Login() {
 
   return (
     <div className="login-container">
-      <div className="login-box">
-        <h1>Admin Login</h1>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="username">Username</label>
-            <input
-              id="username"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter username"
-              required
-            />
+      <div className="login-wrapper">
+        <div className="login-box">
+          <h1>Admin Login</h1>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="username">Username</label>
+              <input
+                id="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter username"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter password"
+                required
+              />
+            </div>
+            {error && <div className="error-message">{error}</div>}
+            <button type="submit" className="login-button">
+              Login
+            </button>
+          </form>
+        </div>
+        <div className="credentials-panel">
+          <h2>Demo Credentials</h2>
+          <div className="credentials-info">
+            <div className="credential-item">
+              <span className="credential-label">Username:</span>
+              <span className="credential-value">admin</span>
+            </div>
+            <div className="credential-item">
+              <span className="credential-label">Password:</span>
+              <span className="credential-value">admin123</span>
+            </div>
           </div>
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter password"
-              required
-            />
-          </div>
-          {error && <div className="error-message">{error}</div>}
-          <button type="submit" className="login-button">
-            Login
-          </button>
-        </form>
+        </div>
       </div>
     </div>
   );
