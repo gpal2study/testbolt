@@ -1,6 +1,6 @@
 .modal-overlay {
   position: fixed;
-  top: 135px;
+  top: 115px;
   left: 0;
   right: 0;
   bottom: 25px;
@@ -28,7 +28,7 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   width: 90%;
   max-width: 500px;
-  max-height: calc(100vh - 180px);
+  max-height: calc(100vh - 160px);
   overflow: auto;
   animation: slideUp 0.3s ease;
 }
