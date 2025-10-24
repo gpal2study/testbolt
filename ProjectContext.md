@@ -19,6 +19,9 @@ This is a **prototype project**.
 - When creating a new master, **ALWAYS ask**: "How many dummy records need to generate?"
 - Generate realistic dummy data with proper data types and relationships
 - Maintain referential integrity between master and child relationships
+- **Store dummy data in separate files** under `src/data/` directory (e.g., `src/data/documentTypes.ts`)
+- Load dummy records from data files when the page/component initializes
+- **DO NOT** hardcode dummy data directly in components
 
 ### 4. Incremental Changes (CRITICAL)
 When modifying existing masters or screens:

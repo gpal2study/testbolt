@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { DocumentType } from '../lib/supabase';
+import { initialDocumentTypes } from '../data/documentTypes';
 import Modal from '../components/Modal';
 import '../styles/DocumentTypeMaster.css';
 
@@ -7,7 +8,12 @@ const STORAGE_KEY = 'document_types';
 
 const getDocumentsFromStorage = (): DocumentType[] => {
   const stored = localStorage.getItem(STORAGE_KEY);
-  return stored ? JSON.parse(stored) : [];
+  if (stored) {
+    return JSON.parse(stored);
+  }
+  // Load initial dummy data if localStorage is empty
+  saveDocumentsToStorage(initialDocumentTypes);
+  return initialDocumentTypes;
 };
 
 const saveDocumentsToStorage = (documents: DocumentType[]) => {
@@ -39,6 +45,7 @@ export default function DocumentTypeMaster() {
 
   const loadDocuments = () => {
     setLoading(true);
+    // Load from localStorage (which includes initial dummy data on first load)
     const data = getDocumentsFromStorage();
     const sortedData = data.sort((a, b) =>
       new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
