@@ -1,7 +1,22 @@
 import { useState, useEffect } from 'react';
-import { supabase, DocumentType } from '../lib/supabase';
+import { DocumentType } from '../lib/supabase';
 import Modal from '../components/Modal';
 import '../styles/DocumentTypeMaster.css';
+
+const STORAGE_KEY = 'document_types';
+
+const getDocumentsFromStorage = (): DocumentType[] => {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  return stored ? JSON.parse(stored) : [];
+};
+
+const saveDocumentsToStorage = (documents: DocumentType[]) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(documents));
+};
+
+const generateId = () => {
+  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
 
 export default function DocumentTypeMaster() {
   const [documents, setDocuments] = useState<DocumentType[]>([]);
@@ -15,25 +30,20 @@ export default function DocumentTypeMaster() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchDocuments();
+    loadDocuments();
   }, []);
 
   useEffect(() => {
     filterDocuments();
   }, [documents, searchText, activeFilter]);
 
-  const fetchDocuments = async () => {
+  const loadDocuments = () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('document_types')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('Error fetching documents:', error);
-    } else {
-      setDocuments(data || []);
-    }
+    const data = getDocumentsFromStorage();
+    const sortedData = data.sort((a, b) =>
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
+    setDocuments(sortedData);
     setLoading(false);
   };
 
@@ -67,56 +77,66 @@ export default function DocumentTypeMaster() {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!formData.name.trim()) {
       setError('Name is required');
       return;
     }
 
-    const { data: { user } } = await supabase.auth.getUser();
+    const allDocs = getDocumentsFromStorage();
+    const currentUser = 'admin';
 
     if (selectedDoc) {
-      const { error: updateError } = await supabase
-        .from('document_types')
-        .update({
-          name: formData.name,
-          description: formData.description,
-          is_active: formData.isActive,
-          updated_by: user?.id
-        })
-        .eq('id', selectedDoc.id);
+      const nameExists = allDocs.some(
+        doc => doc.name.toLowerCase() === formData.name.toLowerCase() && doc.id !== selectedDoc.id
+      );
 
-      if (updateError) {
-        if (updateError.code === '23505') {
-          setError('Name must be unique');
-        } else {
-          setError('Error updating document type');
-        }
+      if (nameExists) {
+        setError('Name must be unique');
         return;
       }
+
+      const updatedDocs = allDocs.map(doc =>
+        doc.id === selectedDoc.id
+          ? {
+              ...doc,
+              name: formData.name,
+              description: formData.description,
+              is_active: formData.isActive,
+              updated_at: new Date().toISOString(),
+              updated_by: currentUser
+            }
+          : doc
+      );
+
+      saveDocumentsToStorage(updatedDocs);
     } else {
-      const { error: insertError } = await supabase
-        .from('document_types')
-        .insert({
-          name: formData.name,
-          description: formData.description,
-          is_active: formData.isActive,
-          created_by: user?.id,
-          updated_by: user?.id
-        });
+      const nameExists = allDocs.some(
+        doc => doc.name.toLowerCase() === formData.name.toLowerCase()
+      );
 
-      if (insertError) {
-        if (insertError.code === '23505') {
-          setError('Name must be unique');
-        } else {
-          setError('Error creating document type');
-        }
+      if (nameExists) {
+        setError('Name must be unique');
         return;
       }
+
+      const newDoc: DocumentType = {
+        id: generateId(),
+        name: formData.name,
+        description: formData.description,
+        is_active: formData.isActive,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        created_by: currentUser,
+        updated_by: currentUser
+      };
+
+      allDocs.push(newDoc);
+      saveDocumentsToStorage(allDocs);
     }
 
     setIsModalOpen(false);
-    fetchDocuments();
+    loadDocuments();
   };
 
   return (
