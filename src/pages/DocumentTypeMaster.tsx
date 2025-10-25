@@ -165,7 +165,7 @@ export default function DocumentTypeMaster() {
           onChange={(e) => setActiveFilter(e.target.value as 'Active' | 'Inactive')}
         >
           <option value="Active">Active</option>
-          <option value="Inactive">Inactive</option>
+          <option value="Inactive">In-Active</option>
         </select>
       </div>
 
