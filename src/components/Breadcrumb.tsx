@@ -8,7 +8,7 @@ export default function Breadcrumb({ currentPath }: BreadcrumbProps) {
       case '/':
         return 'Home';
       case '/doc-type-master':
-        return 'Home / Document Type Master';
+        return 'Document Type Master';
       default:
         return 'Home';
     }
