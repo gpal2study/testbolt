@@ -148,14 +148,10 @@ export default function DocumentTypeMaster() {
 
   return (
     <div className="doc-type-master">
-      <div className="page-header">
-        <h1>Document Type Master</h1>
-        <button className="btn-primary" onClick={handleAdd}>
-          Add New
-        </button>
-      </div>
-
       <div className="search-filters">
+        <button className="btn-primary" onClick={handleAdd}>
+          Add
+        </button>
         <input
           type="text"
           className="search-input"
