@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import DocumentTypeMaster from './pages/DocumentTypeMaster';
+import ProductMaster from './pages/ProductMaster';
 import Layout from './components/Layout';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -26,6 +27,7 @@ function App() {
           >
             <Route index element={<Home />} />
             <Route path="doc-type-master" element={<DocumentTypeMaster />} />
+            <Route path="product-master" element={<ProductMaster />} />
           </Route>
         </Routes>
       </BrowserRouter>
